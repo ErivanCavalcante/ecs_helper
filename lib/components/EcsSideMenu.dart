@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 
 class EcsSideMenuValue {
   final int currentPage;
-  final List<MenuItem> items;
+  final List<EcsMenuItem> items;
 
   EcsSideMenuValue({
     this.currentPage = -1,
     required this.items,
   });
 
-  EcsSideMenuValue copyWith({int? currentPage, List<MenuItem>? items}) {
+  EcsSideMenuValue copyWith({int? currentPage, List<EcsMenuItem>? items}) {
     return EcsSideMenuValue(
       currentPage: currentPage ?? this.currentPage,
       items: items ?? this.items,
@@ -20,7 +20,7 @@ class EcsSideMenuValue {
 }
 
 class EcsSideMenuController extends ValueNotifier<EcsSideMenuValue> {
-  EcsSideMenuController({required List<MenuItem> items})
+  EcsSideMenuController({required List<EcsMenuItem> items})
       : super(EcsSideMenuValue(items: items));
 
   void changePage(int page) {
@@ -36,12 +36,12 @@ class EcsSideMenuController extends ValueNotifier<EcsSideMenuValue> {
   }
 }
 
-class MenuItem {
+class EcsMenuItem {
   String title;
   Icon icon;
   VoidCallback? onTap;
 
-  MenuItem({
+  EcsMenuItem({
     required this.title,
     required this.icon,
     this.onTap,
@@ -52,12 +52,14 @@ class EcsSideMenu extends StatefulWidget {
   EcsSideMenuController controller;
   Widget? header;
   Widget? footer;
+  bool useDivider;
 
   EcsSideMenu({
     Key? key,
     required this.controller,
     this.header,
     this.footer,
+    this.useDivider = false,
   }) : super(key: key);
 
   @override
@@ -96,25 +98,28 @@ class _EcsSideMenuState extends State<EcsSideMenu> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
-      child: Container(
-        color: colorScheme.surface,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (widget.header != null) widget.header!,
-            const Divider(),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _getSideItems(),
+      child: SizedBox(
+        width: 300,
+        child: Container(
+          color: colorScheme.surface,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (widget.header != null) widget.header!,
+              if (widget.useDivider) const Divider(),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: _getSideItems(),
+                  ),
                 ),
               ),
-            ),
-            _getFooter(),
-          ],
+              _getFooter(),
+            ],
+          ),
         ),
       ),
     );

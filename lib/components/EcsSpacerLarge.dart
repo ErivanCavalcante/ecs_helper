@@ -15,10 +15,10 @@ class EcsSpacerLarge extends StatelessWidget {
   Widget build(BuildContext context) {
     return isVertical
         ? const SizedBox(
-            height: 16,
+            height: 32,
           )
         : const SizedBox(
-            width: 16,
+            width: 32,
           );
   }
 }
