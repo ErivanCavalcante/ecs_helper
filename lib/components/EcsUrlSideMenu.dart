@@ -99,9 +99,11 @@ class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
       child: NavigationListener(builder: (context, child) {
         return AnimatedContainer(
           decoration: BoxDecoration(
-            color: colorScheme.primary.withOpacity(0.2),
+            color: colorScheme.primary.withAlpha(40),
             border: const Border(
-              right: BorderSide(),
+              right: BorderSide(
+                color: Colors.black12,
+              ),
             ),
           ),
           width: widget.controller.value.width,
@@ -111,15 +113,16 @@ class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                height: 68,
+                height: 58,
                 decoration: const BoxDecoration(
                   border: Border(
-                    right: BorderSide(),
-                    bottom: BorderSide(),
+                    bottom: BorderSide(
+                      color: Colors.black12,
+                    ),
                   ),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(32.0),
+                  padding: const EdgeInsets.only(right: 32.0),
                   child: widget.logo,
                 ),
               ),
@@ -151,10 +154,14 @@ class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
 
     for (var key in widget.items.keys) {
       // Adiciona o title dos itens
-      items.add(Text(
-        key,
-        style: theme.textTheme.labelMedium?.copyWith(
-          fontWeight: FontWeight.bold,
+      items.add(Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: Text(
+          key,
+          style: theme.textTheme.labelSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Colors.black45,
+          ),
         ),
       ));
 
@@ -164,9 +171,12 @@ class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
             onTap: menu.onTap,
             child: (_isSelected(menu, path))
                 ? Container(
-                    color: Colors.white,
                     height: 50,
                     padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4.0),
+                      color: Colors.white,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -199,6 +209,7 @@ class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
                         Icon(
                           menu.icon,
                           size: 16,
+                          color: Colors.black54,
                         ),
                         EcsSpacerMedium.horizontal(),
                         Text(
@@ -206,6 +217,7 @@ class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     fontWeight: FontWeight.bold,
+                                    color: Colors.black54,
                                   ),
                         ),
                       ],
