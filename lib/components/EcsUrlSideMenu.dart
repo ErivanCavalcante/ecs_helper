@@ -3,8 +3,6 @@ import 'package:ecs_helper/components/EcsSpacerMedium.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
-import 'package:ecs_helper/components/EcsSpacerSmall.dart';
-
 class EcsUrlSideMenuValue {
   final double width;
   final bool isColapsed;
@@ -56,7 +54,6 @@ class EcsUrlMenuItem {
 class EcsUrlSideMenu extends StatefulWidget {
   Widget logo;
   Map<String, List<EcsUrlMenuItem>> items;
-  Widget? header;
   Widget? footer;
   EcsUrlSideMenuController controller;
 
@@ -64,7 +61,6 @@ class EcsUrlSideMenu extends StatefulWidget {
     Key? key,
     required this.logo,
     required this.items,
-    this.header,
     this.footer,
     required this.controller,
   }) : super(key: key);
@@ -88,20 +84,45 @@ class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
   }
 
   @override
+  void didUpdateWidget(covariant EcsUrlSideMenu oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    oldWidget.controller.removeListener(_listener);
+    widget.controller.addListener(_listener);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
+      elevation: 0,
       child: NavigationListener(builder: (context, child) {
         return AnimatedContainer(
+          decoration: BoxDecoration(
+            color: colorScheme.primary.withOpacity(0.2),
+            border: const Border(
+              right: BorderSide(),
+            ),
+          ),
           width: widget.controller.value.width,
-          color: colorScheme.primary.withOpacity(0.2),
           duration: const Duration(seconds: 1),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (widget.header != null) widget.header!,
+              Container(
+                height: 68,
+                decoration: const BoxDecoration(
+                  border: Border(
+                    right: BorderSide(),
+                    bottom: BorderSide(),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: widget.logo,
+                ),
+              ),
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
@@ -114,21 +135,11 @@ class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
                   ),
                 ),
               ),
-              _getFooter(),
+              if (widget.footer != null) widget.footer!,
             ],
           ),
         );
       }),
-    );
-  }
-
-  Widget _getFooter() {
-    if (widget.footer != null) return widget.footer!;
-
-    return Text(
-      'Copyright 2022',
-      style: Theme.of(context).textTheme.bodyMedium,
-      textAlign: TextAlign.center,
     );
   }
 
