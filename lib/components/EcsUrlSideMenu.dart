@@ -1,12 +1,48 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:ecs_helper/components/EcsSpacerSmall.dart';
+import 'package:ecs_helper/components/EcsSpacerMedium.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+
+import 'package:ecs_helper/components/EcsSpacerSmall.dart';
+
+class EcsUrlSideMenuValue {
+  final double width;
+  final bool isColapsed;
+
+  EcsUrlSideMenuValue({
+    required this.width,
+    required this.isColapsed,
+  });
+
+  EcsUrlSideMenuValue copyWith({
+    double? width,
+    bool? isColapsed,
+  }) {
+    return EcsUrlSideMenuValue(
+      width: width ?? this.width,
+      isColapsed: isColapsed ?? this.isColapsed,
+    );
+  }
+}
+
+class EcsUrlSideMenuController extends ValueNotifier<EcsUrlSideMenuValue> {
+  EcsUrlSideMenuController()
+      : super(EcsUrlSideMenuValue(width: 256, isColapsed: false));
+
+  void colapse() {
+    final isColapsed = !value.isColapsed;
+
+    final width = isColapsed ? 76.0 : 256.0;
+
+    value = value.copyWith(width: width, isColapsed: isColapsed);
+    notifyListeners();
+  }
+}
 
 class EcsUrlMenuItem {
   String basePath;
   String title;
-  Icon icon;
+  IconData icon;
   VoidCallback? onTap;
 
   EcsUrlMenuItem({
@@ -18,17 +54,19 @@ class EcsUrlMenuItem {
 }
 
 class EcsUrlSideMenu extends StatefulWidget {
-  List<EcsUrlMenuItem> items;
+  Widget logo;
+  Map<String, List<EcsUrlMenuItem>> items;
   Widget? header;
   Widget? footer;
-  bool useDivider;
+  EcsUrlSideMenuController controller;
 
   EcsUrlSideMenu({
     Key? key,
+    required this.logo,
     required this.items,
     this.header,
     this.footer,
-    this.useDivider = false,
+    required this.controller,
   }) : super(key: key);
 
   @override
@@ -36,24 +74,38 @@ class EcsUrlSideMenu extends StatefulWidget {
 }
 
 class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
+  void _listener() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.controller.addListener(_listener);
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
       child: NavigationListener(builder: (context, child) {
-        return SizedBox(
-          width: 300,
-          child: Container(
-            color: colorScheme.surface,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (widget.header != null) widget.header!,
-                if (widget.useDivider) const Divider(),
-                Expanded(
-                  child: SingleChildScrollView(
+        return AnimatedContainer(
+          width: widget.controller.value.width,
+          color: colorScheme.primary.withOpacity(0.2),
+          duration: const Duration(seconds: 1),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (widget.header != null) widget.header!,
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -61,9 +113,9 @@ class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
                     ),
                   ),
                 ),
-                _getFooter(),
-              ],
-            ),
+              ),
+              _getFooter(),
+            ],
           ),
         );
       }),
@@ -81,59 +133,81 @@ class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
   }
 
   List<Widget> _getSideItems() {
+    final theme = Theme.of(context);
+
     var items = <Widget>[];
     var path = Modular.to.path;
 
-    for (int i = 0; i < widget.items.length; ++i) {
-      var menu = widget.items[i];
+    for (var key in widget.items.keys) {
+      // Adiciona o title dos itens
+      items.add(Text(
+        key,
+        style: theme.textTheme.labelMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+        ),
+      ));
 
-      items.add(
-        InkWell(
-          onTap: menu.onTap,
-          child: Stack(
-            children: [
-              Container(
-                height: 60,
-                padding: const EdgeInsets.all(16),
-                color: (_isSelected(menu, path))
-                    ? const Color.fromARGB(255, 255, 255, 255)
-                    : const Color.fromARGB(0, 255, 255, 255),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+      for (var menu in widget.items[key]!) {
+        items.add(
+          InkWell(
+            onTap: menu.onTap,
+            child: (_isSelected(menu, path))
+                ? Container(
+                    color: Colors.white,
+                    height: 50,
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        menu.icon,
-                        EcsSpacerSmall.horizontal(),
+                        Icon(
+                          menu.icon,
+                          color: theme.colorScheme.primary,
+                          size: 16,
+                        ),
+                        EcsSpacerMedium.horizontal(),
                         Text(
                           menu.title,
-                          style: Theme.of(context).textTheme.titleMedium,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: theme.colorScheme.primary),
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-              if (_isSelected(menu, path))
-                SizedBox(
-                  height: 60,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 4,
-                      top: 8,
-                      bottom: 8,
-                    ),
-                    child: Container(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 5,
+                  )
+                : Container(
+                    height: 50,
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Icon(
+                          menu.icon,
+                          size: 16,
+                        ),
+                        EcsSpacerMedium.horizontal(),
+                        Text(
+                          menu.title,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-            ],
           ),
-        ),
-      );
+        );
+      }
+
+      // Separador entre os menus
+      items.add(EcsSpacerMedium.vertical());
+      items.add(const Divider());
+      items.add(EcsSpacerMedium.vertical());
     }
 
     return items;
@@ -141,5 +215,12 @@ class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
 
   bool _isSelected(EcsUrlMenuItem item, String path) {
     return path.startsWith(item.basePath);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_listener);
+    widget.controller.dispose();
+    super.dispose();
   }
 }
