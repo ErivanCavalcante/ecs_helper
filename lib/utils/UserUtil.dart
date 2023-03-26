@@ -1,20 +1,20 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 
 class UserUtil {
-  static Future<bool> isUserLogged() async {
-    final preference = await SharedPreferences.getInstance();
+  static bool isUserLogged() {
+    final box = GetStorage();
 
-    return preference.getString('user_id') != null;
+    return box.read('user_id') != null;
   }
 
-  static Future<bool> isTokenExpired() async {
-    if (!await UserUtil.isUserLogged()) {
+  static bool isTokenExpired() {
+    if (!UserUtil.isUserLogged()) {
       return true;
     }
 
-    final preference = await SharedPreferences.getInstance();
+    final box = GetStorage();
 
-    final expires = preference.getInt('expires');
+    final int? expires = box.read('expires');
     final currentDate = DateTime.now();
 
     if (expires == null) {
@@ -28,12 +28,18 @@ class UserUtil {
     return false;
   }
 
-  static Future logout() async {
-    final preference = await SharedPreferences.getInstance();
-    preference.clear();
+  static String? readToken() {
+    final box = GetStorage();
+
+    return box.read('token');
   }
 
-  static Future login({
+  static Future logout() async {
+    final box = GetStorage();
+    await box.erase();
+  }
+
+  static void login({
     required String userId,
     required String email,
     required String token,
@@ -41,29 +47,29 @@ class UserUtil {
     String? name,
     String? role,
     String? cargo,
-  }) async {
-    final preference = await SharedPreferences.getInstance();
+  }) {
+    final box = GetStorage();
 
-    preference.setString('user_id', userId);
-    preference.setString('email', email);
-    preference.setString('token', token);
-    preference.setInt('expires', expires.millisecondsSinceEpoch);
+    box.write('user_id', userId);
+    box.write('email', email);
+    box.write('token', token);
+    box.write('expires', expires.millisecondsSinceEpoch);
 
     if (name != null) {
-      preference.setString('name', name);
+      box.write('name', name);
     }
 
     if (role != null) {
-      preference.setString('role', role);
+      box.write('role', role);
     }
 
     if (cargo != null) {
-      preference.setString('cargo', cargo);
+      box.write('cargo', cargo);
     }
   }
 
-  static Future<Map<String, dynamic>> getUserData() async {
-    final preference = await SharedPreferences.getInstance();
+  static Map<String, dynamic> readUserData() {
+    final box = GetStorage();
 
     final keys = <String>[
       'user_id',
@@ -78,8 +84,10 @@ class UserUtil {
     Map<String, dynamic> data = {};
 
     for (var key in keys) {
-      if (preference.containsKey(key)) {
-        data[key] = preference.get(key);
+      var value = box.read(key);
+
+      if (value != null) {
+        data[key] = value;
       }
     }
 

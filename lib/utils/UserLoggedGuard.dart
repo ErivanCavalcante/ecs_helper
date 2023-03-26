@@ -6,7 +6,7 @@ class UserLoggedGuard extends RouteGuard {
 
   @override
   FutureOr<bool> canActivate(String path, ParallelRoute route) async {
-    if (!await UserUtil.isTokenExpired()) {
+    if (!UserUtil.isTokenExpired()) {
       return true;
     }
 
