@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:ecs_helper/ecs_helper.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class UserLoggedGuard extends RouteGuard {
   UserLoggedGuard(String redirectTo) : super(redirectTo: redirectTo);

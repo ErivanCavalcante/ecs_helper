@@ -1,10 +1,11 @@
-import 'package:get_storage/get_storage.dart';
+import 'package:ecs_helper/ecs_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserUtil {
   static bool isUserLogged() {
-    final box = GetStorage();
+    final box = EcsHelper.preferences;
 
-    return box.read('user_id') != null;
+    return box.getString('email') != null;
   }
 
   static bool isTokenExpired() {
@@ -12,9 +13,9 @@ class UserUtil {
       return true;
     }
 
-    final box = GetStorage();
+    final box = EcsHelper.preferences;
 
-    final int? expires = box.read('expires');
+    final int? expires = box.getInt('expires');
     final currentDate = DateTime.now();
 
     if (expires == null) {
@@ -29,18 +30,18 @@ class UserUtil {
   }
 
   static String? readToken() {
-    final box = GetStorage();
+    final box = EcsHelper.preferences;
 
-    return box.read('token');
+    return box.getString('token');
   }
 
   static Future logout() async {
-    final box = GetStorage();
-    await box.erase();
+    final box = await SharedPreferences.getInstance();
+    await box.clear();
   }
 
   static void login({
-    required String userId,
+    required String userName,
     required String email,
     required String token,
     required DateTime expires,
@@ -48,31 +49,31 @@ class UserUtil {
     String? role,
     String? cargo,
   }) {
-    final box = GetStorage();
+    final box = EcsHelper.preferences;
 
-    box.write('user_id', userId);
-    box.write('email', email);
-    box.write('token', token);
-    box.write('expires', expires.millisecondsSinceEpoch);
+    box.setString('email', email);
+    box.setString('userName', userName);
+    box.setString('token', token);
+    box.setInt('expires', expires.millisecondsSinceEpoch);
 
     if (name != null) {
-      box.write('name', name);
+      box.setString('name', name);
     }
 
     if (role != null) {
-      box.write('role', role);
+      box.setString('role', role);
     }
 
     if (cargo != null) {
-      box.write('cargo', cargo);
+      box.setString('cargo', cargo);
     }
   }
 
   static Map<String, dynamic> readUserData() {
-    final box = GetStorage();
+    final box = EcsHelper.preferences;
 
     final keys = <String>[
-      'user_id',
+      'userName',
       'email',
       'token',
       'expires',
@@ -84,7 +85,7 @@ class UserUtil {
     Map<String, dynamic> data = {};
 
     for (var key in keys) {
-      var value = box.read(key);
+      var value = box.get(key);
 
       if (value != null) {
         data[key] = value;

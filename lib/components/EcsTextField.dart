@@ -41,6 +41,7 @@ class EcsTextField extends StatelessWidget {
       maxLines: maxLines,
       minLines: minLines,
       expands: expanded,
+      obscureText: obscureText,
       keyboardType: keyboardType,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
