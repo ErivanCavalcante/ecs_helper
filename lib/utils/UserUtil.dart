@@ -35,12 +35,19 @@ class UserUtil {
     return box.getString('token');
   }
 
+  static String? readUserId() {
+    final box = EcsHelper.preferences;
+
+    return box.getString('id');
+  }
+
   static Future logout() async {
     final box = await SharedPreferences.getInstance();
     await box.clear();
   }
 
   static void login({
+    required String id,
     required String userName,
     required String email,
     required String token,
@@ -51,6 +58,7 @@ class UserUtil {
   }) {
     final box = EcsHelper.preferences;
 
+    box.setString('id', id);
     box.setString('email', email);
     box.setString('userName', userName);
     box.setString('token', token);
@@ -73,6 +81,7 @@ class UserUtil {
     final box = EcsHelper.preferences;
 
     final keys = <String>[
+      'id',
       'userName',
       'email',
       'token',
