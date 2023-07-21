@@ -2,10 +2,7 @@ library ecs_helper;
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-export 'package:ecs_helper/components/EcsSpacerSmall.dart' show EcsSpacerSmall;
-export 'package:ecs_helper/components/EcsSpacerMedium.dart'
-    show EcsSpacerMedium;
-export 'package:ecs_helper/components/EcsSpacerLarge.dart' show EcsSpacerLarge;
+export 'package:ecs_helper/components/EcsSpacer.dart' show EcsSpacer;
 export 'package:ecs_helper/components/EcsSideMenu.dart';
 export 'package:ecs_helper/components/EcsUrlSideMenu.dart';
 export 'package:ecs_helper/components/EcsTextField.dart' show EcsTextField;

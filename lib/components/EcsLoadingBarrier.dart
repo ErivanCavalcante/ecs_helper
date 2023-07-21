@@ -1,10 +1,10 @@
-import 'package:ecs_helper/components/EcsSpacerSmall.dart';
+import 'package:ecs_helper/components/EcsSpacer.dart';
 import 'package:flutter/material.dart';
 
 class EcsLoadingBarrier extends StatelessWidget {
-  String description;
+  final String description;
 
-  EcsLoadingBarrier({Key? key, this.description = ''}) : super(key: key);
+  const EcsLoadingBarrier({Key? key, this.description = ''}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,9 @@ class EcsLoadingBarrier extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const CircularProgressIndicator(),
-              EcsSpacerSmall.vertical(),
+              const EcsSpacer.vertical(
+                size: SpacerSize.sm,
+              ),
               Text(
                 description,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(

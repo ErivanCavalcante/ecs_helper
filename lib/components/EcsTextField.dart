@@ -3,21 +3,21 @@ import 'package:flutter/services.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class EcsTextField extends StatelessWidget {
-  String formControlName;
-  String labelText;
-  String? hintText;
-  Icon? prefixIcon;
-  Widget? prefix;
-  bool obscureText;
-  int? minLines;
-  int? maxLines;
-  bool expanded;
-  bool filled;
-  TextInputType keyboardType;
-  Map<String, String Function(Object)>? validationMessages;
-  List<TextInputFormatter>? inputFormatters;
+  final String formControlName;
+  final String labelText;
+  final String? hintText;
+  final Icon? prefixIcon;
+  final Widget? prefix;
+  final bool obscureText;
+  final int? minLines;
+  final int? maxLines;
+  final bool expanded;
+  final bool filled;
+  final TextInputType keyboardType;
+  final Map<String, String Function(Object)>? validationMessages;
+  final List<TextInputFormatter>? inputFormatters;
 
-  EcsTextField({
+  const EcsTextField({
     Key? key,
     required this.formControlName,
     required this.labelText,

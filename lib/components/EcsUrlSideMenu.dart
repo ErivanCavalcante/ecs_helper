@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:ecs_helper/components/EcsSpacerMedium.dart';
+import 'package:ecs_helper/components/EcsSpacer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -52,12 +52,12 @@ class EcsUrlMenuItem {
 }
 
 class EcsUrlSideMenu extends StatefulWidget {
-  Widget logo;
-  Map<String, List<EcsUrlMenuItem>> items;
-  Widget? footer;
-  EcsUrlSideMenuController controller;
+  final Widget logo;
+  final Map<String, List<EcsUrlMenuItem>> items;
+  final Widget? footer;
+  final EcsUrlSideMenuController controller;
 
-  EcsUrlSideMenu({
+  const EcsUrlSideMenu({
     Key? key,
     required this.logo,
     required this.items,
@@ -186,7 +186,9 @@ class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
                           color: theme.colorScheme.primary,
                           size: 16,
                         ),
-                        EcsSpacerMedium.horizontal(),
+                        const EcsSpacer.horizontal(
+                          size: SpacerSize.md,
+                        ),
                         Text(
                           menu.title,
                           style: Theme.of(context)
@@ -211,7 +213,9 @@ class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
                           size: 16,
                           color: Colors.black54,
                         ),
-                        EcsSpacerMedium.horizontal(),
+                        const EcsSpacer.horizontal(
+                          size: SpacerSize.md,
+                        ),
                         Text(
                           menu.title,
                           style:
@@ -228,9 +232,13 @@ class _EcsUrlSideMenuState extends State<EcsUrlSideMenu> {
       }
 
       // Separador entre os menus
-      items.add(EcsSpacerMedium.vertical());
+      items.add(const EcsSpacer.vertical(
+        size: SpacerSize.md,
+      ));
       items.add(const Divider());
-      items.add(EcsSpacerMedium.vertical());
+      items.add(const EcsSpacer.vertical(
+        size: SpacerSize.md,
+      ));
     }
 
     return items;

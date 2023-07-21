@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:ecs_helper/components/EcsSpacerSmall.dart';
+import 'package:ecs_helper/components/EcsSpacer.dart';
 import 'package:flutter/material.dart';
 
 class EcsSideMenuValue {
@@ -49,12 +49,12 @@ class EcsMenuItem {
 }
 
 class EcsSideMenu extends StatefulWidget {
-  EcsSideMenuController controller;
-  Widget? header;
-  Widget? footer;
-  bool useDivider;
+  final EcsSideMenuController controller;
+  final Widget? header;
+  final Widget? footer;
+  final bool useDivider;
 
-  EcsSideMenu({
+  const EcsSideMenu({
     Key? key,
     required this.controller,
     this.header,
@@ -173,7 +173,9 @@ class _EcsSideMenuState extends State<EcsSideMenu> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         menu.icon,
-                        EcsSpacerSmall.horizontal(),
+                        const EcsSpacer.horizontal(
+                          size: SpacerSize.sm,
+                        ),
                         Text(
                           menu.title,
                           style: Theme.of(context).textTheme.titleMedium,
